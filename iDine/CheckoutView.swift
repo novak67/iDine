@@ -8,13 +8,19 @@
 import SwiftUI
 
 struct CheckoutView: View {
+    
     @EnvironmentObject var order: Order
+    
     let paymentTypes = ["Cash", "Credit Card", "iDine Points"]
     @State private var paymentType = "Cash"
+    
     @State private var addLoyaltyDetails = false
     @State private var loyaltyNumber = ""
+    
     let tipAmounts = [10, 15, 20, 25, 0]
     @State private var tipAmount = 15
+    
+    @State private var showingPaymentAlert = false
     
     var totalPrice: String {
         let formatter = NumberFormatter()
@@ -51,11 +57,14 @@ struct CheckoutView: View {
                         Text("TOTAL: \(totalPrice)")
             ) {
                 Button("Confirm order") {
-                    // place the order
+                    showingPaymentAlert.toggle()
                 }
             }
             .navigationTitle("Payment")
             .navigationBarTitleDisplayMode(.inline)
+            .alert(isPresented: $showingPaymentAlert) {
+                Alert(title: Text("Order confirmed"), message: Text("Your total was \(totalPrice) – thank you!"), dismissButton: .default(Text("OK")))
+            }
         }
     }
     
