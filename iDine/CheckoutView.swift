@@ -15,6 +15,17 @@ struct CheckoutView: View {
     @State private var loyaltyNumber = ""
     let tipAmounts = [10, 15, 20, 25, 0]
     @State private var tipAmount = 15
+    
+    var totalPrice: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        
+        let total = Double(order.total)
+        let tipValue = total / 100 * Double(tipAmount)
+        
+        return formatter.string(from: NSNumber(value: total + tipValue)) ?? "$0"
+    }
+    
     var body: some View {
         Form {
             Section {
@@ -37,20 +48,20 @@ struct CheckoutView: View {
                 .pickerStyle(SegmentedPickerStyle())
             }
             Section(header:
-                        Text("TOTAL: $100")
+                        Text("TOTAL: \(totalPrice)")
             ) {
                 Button("Confirm order") {
                     // place the order
                 }
             }
+            .navigationTitle("Payment")
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .navigationTitle("Payment")
-        .navigationBarTitleDisplayMode(.inline)
     }
-}
-
-struct CheckoutView_Previews: PreviewProvider {
-    static var previews: some View {
-        CheckoutView().environmentObject(Order())
+    
+    struct CheckoutView_Previews: PreviewProvider {
+        static var previews: some View {
+            CheckoutView().environmentObject(Order())
+        }
     }
 }
